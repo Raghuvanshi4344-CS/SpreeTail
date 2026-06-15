@@ -1,0 +1,137 @@
+<%- include('partials/header', { title, user }) %>
+<section class="page-grid">
+  <article class="panel intro-card">
+    <div>
+      <p class="eyebrow"><%= group.currency %> group</p>
+      <h1><%= group.name %></h1>
+      <p>Balances are computed from dated expenses and payments. People only share costs while they are members.</p>
+    </div>
+    <div class="button-row">
+      <a class="button" href="/groups/<%= group.id %>/import">Import CSV</a>
+      <a class="ghost-link" href="/dashboard">Back to dashboard</a>
+    </div>
+  </article>
+
+  <section class="stack">
+    <div class="section-head">
+      <h2>Settlement view</h2>
+      <p>Positive balance means the person should receive money. Negative balance means they owe.</p>
+    </div>
+    <div class="panel table">
+      <table>
+        <thead><tr><th>From</th><th>To</th><th>Amount</th></tr></thead>
+        <tbody>
+          <% settlements.forEach((settlement) => { %>
+            <tr>
+              <td><%= settlement.from %></td>
+              <td><%= settlement.to %></td>
+              <td><%= moneyLabel(settlement.amountMinor, group.currency) %></td>
+            </tr>
+          <% }) %>
+          <% if (settlements.length === 0) { %>
+            <tr><td colspan="3">No outstanding debts.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel table">
+      <table>
+        <thead><tr><th>Person</th><th>Balance</th><th>Trace</th></tr></thead>
+        <tbody>
+          <% balances.forEach((member) => { %>
+            <tr>
+              <td><%= member.name %></td>
+              <td class="<%= member.balanceMinor >= 0 ? 'positive' : 'negative' %>"><%= moneyLabel(member.balanceMinor, group.currency) %></td>
+              <td>
+                <% member.ledger.slice(0, 3).forEach((entry) => { %>
+                  <span class="chip"><%= entry.direction %> <%= moneyLabel(entry.amountMinor, group.currency) %> <%= entry.description %></span>
+                <% }) %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="stack two-col">
+    <div class="panel form">
+      <h2>Add member</h2>
+      <form method="post" action="/groups/<%= group.id %>/members">
+        <label>Name<input name="user_name" placeholder="Sam" required /></label>
+        <label>Joined at<input name="joined_at" type="date" /></label>
+        <label>Left at<input name="left_at" type="date" /></label>
+        <button type="submit">Save member</button>
+      </form>
+    </div>
+    <div class="panel form">
+      <h2>Add expense</h2>
+      <form method="post" action="/groups/<%= group.id %>/expenses">
+        <label>Date<input name="expense_date" type="date" required /></label>
+        <label>Description<input name="description" required /></label>
+        <label>Amount<input name="amount" required /></label>
+        <label>Currency<input name="currency" value="INR" /></label>
+        <label>Payer<input name="payer" required /></label>
+        <label>Split type<select name="split_type"><option>equal</option><option>exact</option><option>percentage</option><option>shares</option></select></label>
+        <label>Participants<input name="participants" placeholder="Aisha, Rohan, Priya" /></label>
+        <label>Exact shares<input name="exact_shares" placeholder="100,100,50" /></label>
+        <label>Percentages<input name="percentage_shares" placeholder="40,30,30" /></label>
+        <label>Exchange rate<input name="exchange_rate" placeholder="83.00" /></label>
+        <button type="submit">Save expense</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="stack two-col">
+    <div class="panel form">
+      <h2>Record payment</h2>
+      <form method="post" action="/groups/<%= group.id %>/payments">
+        <label>Date<input name="payment_date" type="date" required /></label>
+        <label>Payer<input name="payer" required /></label>
+        <label>Payee<input name="payee" required /></label>
+        <label>Amount<input name="amount" required /></label>
+        <label>Currency<input name="currency" value="INR" /></label>
+        <button type="submit">Save payment</button>
+      </form>
+    </div>
+    <div class="panel table">
+      <h2>Membership timeline</h2>
+      <table>
+        <thead><tr><th>Name</th><th>Joined</th><th>Left</th></tr></thead>
+        <tbody>
+          <% members.forEach((member) => { %>
+            <tr>
+              <td><%= member.name %></td>
+              <td><%= member.joined_at %></td>
+              <td><%= member.left_at || 'active' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="stack">
+    <div class="section-head">
+      <h2>Recent ledger</h2>
+      <p><%= overview.transaction_count %> transactions, including settlements.</p>
+    </div>
+    <div class="panel table">
+      <table>
+        <thead><tr><th>Date</th><th>Description</th><th>Payer</th><th>Type</th><th>Base amount</th></tr></thead>
+        <tbody>
+          <% ledger.forEach((entry) => { %>
+            <tr>
+              <td><%= entry.expense_date %></td>
+              <td><%= entry.description %></td>
+              <td><%= entry.payer_name %></td>
+              <td><%= entry.transaction_type %></td>
+              <td><%= moneyLabel(entry.base_amount_minor, group.currency) %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+<%- include('partials/footer') %>

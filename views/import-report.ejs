@@ -1,0 +1,70 @@
+<%- include('partials/header', { title, user }) %>
+<section class="page-grid">
+  <article class="panel intro-card">
+    <div>
+      <p class="eyebrow">Import report</p>
+      <h1><%= job.filename %></h1>
+      <p><%= job.applied_count %> applied, <%= job.skipped_count %> skipped, <%= job.anomaly_count %> anomalies.</p>
+    </div>
+    <div class="button-row">
+      <a class="button" href="/groups/<%= job.group_id %>">Open group</a>
+      <a class="ghost-link" href="/groups/<%= job.group_id %>/import">Import another file</a>
+    </div>
+  </article>
+
+  <section class="stack">
+    <div class="section-head">
+      <h2>Detected anomalies</h2>
+      <p>Each anomaly has a policy action. Approvals are stored instead of hidden.</p>
+    </div>
+    <div class="panel table">
+      <table>
+        <thead><tr><th>Row</th><th>Type</th><th>Severity</th><th>Message</th><th>Policy</th><th>Decision</th></tr></thead>
+        <tbody>
+          <% anomalies.forEach((anomaly) => { %>
+            <tr>
+              <td><%= anomaly.row_number ?? 'n/a' %></td>
+              <td><%= anomaly.type %></td>
+              <td><%= anomaly.severity %></td>
+              <td><%= anomaly.message %></td>
+              <td><%= anomaly.policy_action %></td>
+              <td>
+                <form method="post" action="/imports/<%= job.id %>/anomalies/<%= anomaly.id %>/decision" class="inline-form">
+                  <select name="decision">
+                    <option value="approve" <%= anomaly.decision === 'approve' ? 'selected' : '' %>>Approve</option>
+                    <option value="reject" <%= anomaly.decision === 'reject' ? 'selected' : '' %>>Reject</option>
+                    <option value="defer" <%= anomaly.decision === 'defer' ? 'selected' : '' %>>Defer</option>
+                  </select>
+                  <button type="submit">Save</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="stack">
+    <div class="section-head">
+      <h2>Imported rows</h2>
+      <p>The raw row and canonical row are both preserved for auditability.</p>
+    </div>
+    <div class="panel table scroll">
+      <table>
+        <thead><tr><th>Row</th><th>Applied</th><th>Raw</th><th>Canonical</th></tr></thead>
+        <tbody>
+          <% rows.forEach((row) => { %>
+            <tr>
+              <td><%= row.row_number %></td>
+              <td><%= row.is_applied ? 'yes' : 'no' %></td>
+              <td><pre><%= row.raw_json %></pre></td>
+              <td><pre><%= row.canonical_json %></pre></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,17 @@
+<%- include('partials/header', { title, user }) %>
+<section class="single-column">
+  <article class="panel intro-card compact">
+    <div>
+      <p class="eyebrow">Import into <%= group.name %></p>
+      <h1>Upload a CSV export</h1>
+      <p>The importer detects anomalies, writes a report, and waits for human approval when the policy requires it.</p>
+    </div>
+    <a class="button" href="/dashboard">Back</a>
+  </article>
+
+  <form class="panel form" method="post" action="/groups/<%= group.id %>/import" enctype="multipart/form-data">
+    <label>CSV file<input type="file" name="csv_file" accept=".csv,text/csv" required /></label>
+    <button type="submit">Import CSV</button>
+  </form>
+</section>
+<%- include('partials/footer') %>

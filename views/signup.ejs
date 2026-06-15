@@ -1,0 +1,17 @@
+<%- include('partials/header', { title, user: null }) %>
+<section class="auth-grid">
+  <article class="hero-card">
+    <p class="eyebrow">Join the ledger</p>
+    <h1>Create your own account.</h1>
+    <p>The app keeps group history, imports, and balances in one relational database.</p>
+  </article>
+  <form class="panel form" method="post" action="/signup">
+    <h2>Sign up</h2>
+    <% if (error) { %><p class="alert"><%= error %></p><% } %>
+    <label>Full name<input name="name" required /></label>
+    <label>Username<input name="username" required /></label>
+    <label>Password<input name="password" type="password" required /></label>
+    <button type="submit">Create account</button>
+  </form>
+</section>
+<%- include('partials/footer') %>

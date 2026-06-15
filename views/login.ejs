@@ -1,0 +1,18 @@
+<%- include('partials/header', { title, user: null }) %>
+<section class="auth-grid">
+  <article class="hero-card">
+    <p class="eyebrow">Flatshare ledger</p>
+    <h1>Make every rupee traceable.</h1>
+    <p>Import the messy sheet, review anomalies, and settle balances without hidden guesses.</p>
+  </article>
+  <form class="panel form" method="post" action="/login">
+    <h2>Login</h2>
+    <% if (error) { %><p class="alert"><%= error %></p><% } %>
+    <label>Username<input name="username" required /></label>
+    <label>Password<input name="password" type="password" required /></label>
+    <button type="submit">Login</button>
+    <p class="muted">New here? <a href="/signup">Create an account</a></p>
+    <p class="muted">Demo users: aisha, rohan, priya, meera, dev, sam. Password: demo1234</p>
+  </form>
+</section>
+<%- include('partials/footer') %>

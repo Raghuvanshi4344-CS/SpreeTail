@@ -1,0 +1,56 @@
+<%- include('partials/header', { title, user }) %>
+<section class="page-grid">
+  <article class="panel intro-card">
+    <div>
+      <p class="eyebrow">Logged in as <%= user.name %></p>
+      <h1>Shared expenses without hidden math.</h1>
+      <p>Groups, imports, balances, and settlement suggestions live in one place. Every anomaly stays visible.</p>
+    </div>
+    <div class="button-row">
+      <a class="button" href="/groups/new">Create group</a>
+      <% if (groups[0]) { %>
+        <a class="ghost-link" href="/groups/<%= groups[0].id %>">Open main group</a>
+      <% } %>
+    </div>
+  </article>
+
+  <section class="stack">
+    <div class="section-head">
+      <h2>Your groups</h2>
+      <p>Membership changes are dated, so past expenses stay anchored to the right set of people.</p>
+    </div>
+    <div class="cards-grid">
+      <% groups.forEach((group) => { %>
+        <a class="panel card-link" href="/groups/<%= group.id %>">
+          <h3><%= group.name %></h3>
+          <p><%= group.currency %> ledger</p>
+          <span><%= group.is_member ? 'Member' : 'Owner' %></span>
+        </a>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="stack">
+    <div class="section-head">
+      <h2>Recent imports</h2>
+      <p>The import report is the source of truth for anomalies and the actions taken.</p>
+    </div>
+    <div class="table panel">
+      <table>
+        <thead><tr><th>File</th><th>Group</th><th>Status</th><th>Anomalies</th><th>Rows</th></tr></thead>
+        <tbody>
+          <% imports.forEach((job) => { %>
+            <tr>
+              <td><a href="/imports/<%= job.id %>"><%= job.filename %></a></td>
+              <td><%= job.group_name || 'n/a' %></td>
+              <td><%= job.status %></td>
+              <td><%= job.anomaly_count %></td>
+              <td><%= job.applied_count + job.skipped_count %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+<%- include('partials/footer') %>

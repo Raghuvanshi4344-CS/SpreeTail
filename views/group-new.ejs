@@ -1,0 +1,10 @@
+<%- include('partials/header', { title, user }) %>
+<section class="single-column">
+  <form class="panel form" method="post" action="/groups">
+    <h1>Create a group</h1>
+    <label>Group name<input name="name" required placeholder="Flatshare" /></label>
+    <label>Base currency<input name="currency" value="INR" /></label>
+    <button type="submit">Create</button>
+  </form>
+</section>
+<%- include('partials/footer') %>

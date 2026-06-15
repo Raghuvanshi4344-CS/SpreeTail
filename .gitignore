@@ -1,0 +1,11 @@
+node_modules/
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+data/app.db
+data/app.db-shm
+data/app.db-wal
+data/uploads/*
+!data/uploads/.gitkeep
+
